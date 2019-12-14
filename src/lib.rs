@@ -66,7 +66,7 @@ pub trait NativeDisplay {
     fn display(&self) -> RawDisplay;
 }
 
-pub trait NativeWindowSource {
+pub trait NativeWindowBuilder {
     type Window: NativeWindow;
 
     #[cfg(any(
@@ -81,7 +81,7 @@ pub trait NativeWindowSource {
     // FIXME: other platforms
 }
 
-pub trait NativePixmapSource {
+pub trait NativePixmapBuilder {
     type Pixmap: NativePixmap;
 
     #[cfg(any(
