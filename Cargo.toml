@@ -1,0 +1,14 @@
+[package]
+name = "glutin_interface"
+version = "0.1.0"
+authors = ["The winit contributors", "Freya Gentz <zegentzy@protonmail.com>"]
+edition = "2018"
+description = "Traits glutin needs to integrate with winit (and potencially other crates)."
+keywords = ["windowing", "opengl"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/rust-windowing/glutin_winit_interface"
+documentation = "https://docs.rs/glutin_winit_interface"
+
+[dependencies]
+winit_types = { version = "0.1.0", path = "../winit_types" }
