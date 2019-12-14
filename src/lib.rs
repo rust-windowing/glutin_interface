@@ -105,6 +105,7 @@ pub enum RawPixmap {
         pixmap: *mut raw::c_void,
     },
 
+    /// If using Xlib/XCB, please provide Xlib handles instead.
     XCB {
         xcb_pixmap_t: u32,
     },
@@ -135,6 +136,7 @@ pub enum RawWindow {
         window: raw::c_ulong,
     },
 
+    /// If using Xlib/XCB, please provide Xlib handles instead.
     XCB {
         xcb_window_t: u32,
     },
