@@ -45,13 +45,10 @@ pub enum RawDisplay {
     /// `EGL_DEFAULT_DISPLAY` is mandatory for Android.
     Android,
 
-    Device {
+    /// EGL_EXT_platform_device, a wierd NVIDIA-led egl platform.
+    EGLExtDevice {
         egl_device_ext: *mut raw::c_void,
     },
-
-    /// Don't specify any display type. Useful on windows.
-    /// `None` means `EGL_DEFAULT_DISPLAY`.
-    Other(Option<*mut raw::c_void>),
 
     /// Nothing required for iOS.
     IOS,
@@ -62,7 +59,7 @@ pub enum RawDisplay {
     /// `EGL_DEFAULT_DISPLAY` is mandatory for EGL_MESA_platform_surfaceless.
     ///
     /// Not to be confused with Mesa's surfaceless context extension.
-    Surfaceless,
+    EGLMesaSurfaceless,
 }
 
 pub trait NativeDisplay {
@@ -99,7 +96,8 @@ pub trait NativePixmapSource {
     // FIXME: other platforms
 }
 
-/// Wayland, Gbm, Android, Surfaceless, and Device do not support pixmaps.
+/// Wayland, Gbm, Android, EGLMesaSurfaceless, and EGLExtDevice do not support
+/// pixmaps.
 #[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 #[non_exhaustive]
 pub enum RawPixmap {
@@ -114,13 +112,10 @@ pub enum RawPixmap {
     Windows {
         hbitmap: *mut raw::c_void,
     },
-
-    /// Don't specify the type.
-    Other(*mut raw::c_void),
     // FIXME: Macos/ios?
 }
 
-/// Device and surfaceless do not support windows.
+/// EGLExtDevice and EGLMesaSurfaceless do not support windows.
 #[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 #[non_exhaustive]
 pub enum RawWindow {
@@ -159,9 +154,6 @@ pub enum RawWindow {
         ns_view_controller: *mut raw::c_void,
         ns_window: *mut raw::c_void,
     },
-
-    /// Don't specify the type.
-    Other(*mut raw::c_void),
 }
 
 pub trait NativeWindow {
