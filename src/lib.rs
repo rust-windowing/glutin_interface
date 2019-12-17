@@ -84,15 +84,6 @@ pub trait NativeWindowBuilder {
 pub trait NativePixmapBuilder {
     type Pixmap: NativePixmap;
 
-    #[cfg(any(
-        target_os = "linux",
-        target_os = "dragonfly",
-        target_os = "freebsd",
-        target_os = "netbsd",
-        target_os = "openbsd"
-    ))]
-    fn build_wayland(self) -> Result<Self::Pixmap, Error>;
-
     // FIXME: other platforms
 }
 
