@@ -185,6 +185,7 @@ pub trait NativeWindowSource {
         wb: Self::WindowBuilder,
         wwp: WaylandWindowParts,
     ) -> Result<Self::Window, Error>;
+
     #[cfg(any(
         target_os = "linux",
         target_os = "dragonfly",
@@ -203,7 +204,7 @@ pub trait NativeWindowSource {
 
 pub trait NativePixmapSource {
     type Pixmap: NativePixmap;
-    type Display: NativeDisplay;
+    type PixmapBuilder;
 
     // FIXME: other platforms
 }
