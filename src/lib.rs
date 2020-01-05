@@ -5,7 +5,7 @@ use std::os::raw;
 use winit_types::dpi::PhysicalSize;
 use winit_types::error::Error;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[doc(hidden)]
 pub struct Seal;
 
@@ -21,6 +21,10 @@ pub enum RawDisplay {
         /// future glutin is going to want to use the `wl_display`. For that
         /// reason `wl_display` is not an `Option`.
         wl_display: *mut raw::c_void,
+
+        #[doc(hidden)]
+        #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
+        _non_exhaustive_do_not_use: Seal,
     },
 
     Xlib {
@@ -133,24 +137,73 @@ pub enum RawDisplay {
 }
 
 pub trait NativeDisplay {
-    fn display(&self) -> RawDisplay;
+    fn raw_display(&self) -> RawDisplay;
 }
 
-pub trait NativeWindowBuilder {
-    type Window: NativeWindow;
+#[cfg(any(
+    target_os = "linux",
+    target_os = "dragonfly",
+    target_os = "freebsd",
+    target_os = "netbsd",
+    target_os = "openbsd"
+))]
+pub struct WaylandWindowParts {
+    #[doc(hidden)]
+    #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
+    pub _non_exhaustive_do_not_use: Seal,
+}
 
-    fn build_wayland(self) -> Result<Self::Window, Error>;
+#[cfg(any(
+    target_os = "linux",
+    target_os = "dragonfly",
+    target_os = "freebsd",
+    target_os = "netbsd",
+    target_os = "openbsd"
+))]
+pub struct X11WindowParts {
+    pub x_visual_info: *const raw::c_void,
+    pub screen: raw::c_int,
+
+    #[doc(hidden)]
+    #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
+    pub _non_exhaustive_do_not_use: Seal,
+}
+
+pub trait NativeWindowSource {
+    type Window: NativeWindow;
+    type WindowBuilder;
+
+    #[cfg(any(
+        target_os = "linux",
+        target_os = "dragonfly",
+        target_os = "freebsd",
+        target_os = "netbsd",
+        target_os = "openbsd"
+    ))]
+    fn build_wayland(
+        &self,
+        wb: Self::WindowBuilder,
+        wwp: WaylandWindowParts,
+    ) -> Result<Self::Window, Error>;
+    #[cfg(any(
+        target_os = "linux",
+        target_os = "dragonfly",
+        target_os = "freebsd",
+        target_os = "netbsd",
+        target_os = "openbsd"
+    ))]
     fn build_x11(
-        self,
-        x_visual_info: *const raw::c_void,
-        screen: raw::c_int,
+        &self,
+        wb: Self::WindowBuilder,
+        xwp: X11WindowParts,
     ) -> Result<Self::Window, Error>;
 
     // FIXME: other platforms
 }
 
-pub trait NativePixmapBuilder {
+pub trait NativePixmapSource {
     type Pixmap: NativePixmap;
+    type Display: NativeDisplay;
 
     // FIXME: other platforms
 }
