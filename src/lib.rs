@@ -299,8 +299,8 @@ pub enum RawWindow {
 pub trait NativeWindow {
     fn raw_window(&self) -> RawWindow;
 
-    fn size(&self) -> PhysicalSize;
-    fn hidpi_factor(&self) -> f64;
+    fn size(&self) -> PhysicalSize<u32>;
+    fn scale_factor(&self) -> f64;
 }
 
 pub trait NativePixmap {
