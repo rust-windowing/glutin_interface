@@ -104,7 +104,7 @@ pub enum RawDisplay {
     },
 
     /// EGL_EXT_platform_device, a wierd NVIDIA-led egl platform.
-    EGLExtDevice {
+    EglExtDevice {
         egl_device_ext: *mut raw::c_void,
 
         #[doc(hidden)]
@@ -129,7 +129,7 @@ pub enum RawDisplay {
     /// `EGL_DEFAULT_DISPLAY` is mandatory for EGL_MESA_platform_surfaceless.
     ///
     /// Not to be confused with Mesa's surfaceless context extension.
-    EGLMesaSurfaceless {
+    EglMesaSurfaceless {
         #[doc(hidden)]
         #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
         _non_exhaustive_do_not_use: Seal,
