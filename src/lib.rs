@@ -15,12 +15,7 @@ pub struct Seal;
 pub enum RawDisplay {
     Wayland {
         /// A `*mut wl_proxy` of a `wl_display`.
-        ///
-        /// It is possible to pass in `EGL_DEFAULT_DISPLAY` to EGL, however, I
-        /// can't think of a use case where that is a good idea and maybe in the
-        /// future glutin is going to want to use the `wl_display`. For that
-        /// reason `wl_display` is not an `Option`.
-        wl_display: *mut raw::c_void,
+        wl_display: Option<*mut raw::c_void>,
 
         #[doc(hidden)]
         #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
@@ -71,9 +66,7 @@ pub enum RawDisplay {
     },
 
     Gbm {
-        /// For reasons similar to those specified for Wayland, we do not
-        /// support `EGL_DEFAULT_DISPLAY`.
-        gbm_device: *mut raw::c_void,
+        gbm_device: Option<*mut raw::c_void>,
 
         #[doc(hidden)]
         #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
@@ -169,6 +162,21 @@ pub struct X11WindowParts {
     pub _non_exhaustive_do_not_use: Seal,
 }
 
+#[cfg(any(
+    target_os = "linux",
+    target_os = "dragonfly",
+    target_os = "freebsd",
+    target_os = "netbsd",
+    target_os = "openbsd"
+))]
+pub struct GbmWindowParts {
+    pub color_format: u32,
+
+    #[doc(hidden)]
+    #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
+    pub _non_exhaustive_do_not_use: Seal,
+}
+
 pub trait NativeWindowSource {
     type Window: NativeWindow;
     type WindowBuilder;
@@ -199,7 +207,18 @@ pub trait NativeWindowSource {
         xwp: X11WindowParts,
     ) -> Result<Self::Window, Error>;
 
-    // FIXME: other platforms
+    #[cfg(any(
+        target_os = "linux",
+        target_os = "dragonfly",
+        target_os = "freebsd",
+        target_os = "netbsd",
+        target_os = "openbsd"
+    ))]
+    fn build_gbm(
+        &self,
+        wb: Self::WindowBuilder,
+        gbmwp: GbmWindowParts,
+    ) -> Result<Self::Window, Error>;
 }
 
 pub trait NativePixmapSource {
