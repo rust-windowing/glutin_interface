@@ -169,6 +169,21 @@ pub struct X11WindowParts {
     target_os = "netbsd",
     target_os = "openbsd"
 ))]
+pub struct X11PixmapParts {
+    pub depth: u16,
+
+    #[doc(hidden)]
+    #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
+    pub _non_exhaustive_do_not_use: Seal,
+}
+
+#[cfg(any(
+    target_os = "linux",
+    target_os = "dragonfly",
+    target_os = "freebsd",
+    target_os = "netbsd",
+    target_os = "openbsd"
+))]
 pub struct GbmWindowParts {
     pub color_format: u32,
 
@@ -225,7 +240,20 @@ pub trait NativePixmapSource {
     type Pixmap: NativePixmap;
     type PixmapBuilder;
 
-    // FIXME: other platforms
+    // FIXME: window
+
+    #[cfg(any(
+        target_os = "linux",
+        target_os = "dragonfly",
+        target_os = "freebsd",
+        target_os = "netbsd",
+        target_os = "openbsd"
+    ))]
+    fn build_x11(
+        &self,
+        pb: Self::PixmapBuilder,
+        xpp: X11PixmapParts,
+    ) -> Result<Self::Pixmap, Error>;
 }
 
 /// Wayland, Gbm, Android, EGLMesaSurfaceless, and EGLExtDevice do not support
@@ -234,7 +262,7 @@ pub trait NativePixmapSource {
 #[non_exhaustive]
 pub enum RawPixmap {
     Xlib {
-        pixmap: *mut raw::c_void,
+        pixmap: raw::c_ulong,
 
         #[doc(hidden)]
         #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
