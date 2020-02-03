@@ -192,6 +192,13 @@ pub struct GbmWindowParts {
     pub _non_exhaustive_do_not_use: Seal,
 }
 
+#[cfg(target_os = "android")]
+pub struct AndroidWindowParts {
+    #[doc(hidden)]
+    #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
+    pub _non_exhaustive_do_not_use: Seal,
+}
+
 pub trait NativeWindowSource {
     type Window: NativeWindow;
     type WindowBuilder;
@@ -233,6 +240,13 @@ pub trait NativeWindowSource {
         &self,
         wb: Self::WindowBuilder,
         gbmwp: GbmWindowParts,
+    ) -> Result<Self::Window, Error>;
+
+    #[cfg(target_os = "android")]
+    fn build_android(
+        &self,
+        wb: Self::WindowBuilder,
+        awp: AndroidWindowParts,
     ) -> Result<Self::Window, Error>;
 }
 
