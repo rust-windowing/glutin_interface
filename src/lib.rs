@@ -248,6 +248,10 @@ pub trait NativeWindowSource {
         wb: Self::WindowBuilder,
         awp: AndroidWindowParts,
     ) -> Result<Self::Window, Error>;
+
+    #[cfg(target_os = "android")]
+    /// Register a callback when a suspend event happens on android.
+    fn set_suspend_callback(&self, cb: Option<Box<dyn Fn(bool) -> ()>>);
 }
 
 pub trait NativePixmapSource {
@@ -305,7 +309,7 @@ pub enum RawWindow {
     },
 
     Android {
-        a_native_window: *mut raw::c_void,
+        a_native_window: *const *mut raw::c_void,
 
         #[doc(hidden)]
         #[deprecated = "This field is used to ensure that this struct is non-exhaustive, so that it may be extended in the future. Do not refer to this field."]
